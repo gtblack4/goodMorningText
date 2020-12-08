@@ -3,18 +3,13 @@ import time
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-
+from random import randint
 import configparser
 #gets the config information from 'config.ini'
 #API credentials and the recipients number
 config = configparser.ConfigParser()
 config.read('config.ini')
 settings = config['DEFAULT']
-
-print(settings["api_id"])
-print(settings['api_hash'])
-print(settings['phone'])
-
 
 tg = Telegram(
 	    api_id=settings["api_id"],
@@ -40,7 +35,6 @@ def sendText(phoneNumber,morningMessage):
 	)
 
 	result.wait()
-	print(result.update)
 	time.sleep(2)
 	tg.stop()  # stops the telegram script
 
@@ -55,10 +49,13 @@ def getPetName():
 	petName = rawName.lstrip().rstrip()
 	petName = " ".join(petName.split())
 	return petName
+#adding a 20% chance to send use "Sweetcheeks" instead of a random name
 
-
-petName = getPetName()
-print(petName)
-message = "Happy " + str(myDate) + " my " + str(petName) + ". How is your morning going?" 
+dailyRoll = randint(1,10)
+if dailyRoll in range(1,2):
+	message = "Goodmorning Sweetcheeks. How did you sleep last night?"
+else:
+	petName = getPetName()
+	message = "Happy " + str(myDate) + " my " + str(petName) + ". How is your morning going?" 
 print(message)
 sendText(settings['recipient'],message)
